@@ -12,6 +12,8 @@ Setup:
 
 * You'll need Visual Studio + [Power Query SDK](https://marketplace.visualstudio.com/items?itemName=Dakahn.PowerQuerySDK) to build the pbi-connector project
 
+* The Flask app runs in Docker... you can run it directly on your laptop, but whyyy
+
 From your shell:
 
 * Run [build.sh](build.sh) to build the Docker image

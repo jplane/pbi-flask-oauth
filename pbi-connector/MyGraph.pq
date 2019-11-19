@@ -1,4 +1,4 @@
-﻿section KrogerDashConnector;
+﻿section DashConnector;
 
 //
 // OAuth configuration settings
@@ -28,8 +28,8 @@ scopes = {
 //
 // Exported function(s)
 //
-[DataSource.Kind="KrogerDashConnector", Publish="KrogerDashConnector.UI"]
-shared KrogerDashConnector.Feed = () =>
+[DataSource.Kind="DashConnector", Publish="DashConnector.UI"]
+shared DashConnector.Feed = () =>
     let
         results = Web.Contents("http://localhost:5000/data"),
         source = Text.FromBinary(results)
@@ -39,8 +39,8 @@ shared KrogerDashConnector.Feed = () =>
 //
 // Data Source definition
 //
-KrogerDashConnector = [
-    TestConnection = (dataSourcePath) => { "KrogerDashConnector.Feed" },
+DashConnector = [
+    TestConnection = (dataSourcePath) => { "DashConnector.Feed" },
     Authentication = [
         OAuth = [
             StartLogin=StartLogin,
@@ -49,20 +49,20 @@ KrogerDashConnector = [
             Logout=Logout
         ]
     ],
-    Label = "My Graph Connector"
+    Label = "My Dash Connector"
 ];
 
 //
 // UI Export definition
 //
-KrogerDashConnector.UI = [
+DashConnector.UI = [
     Beta = true,
-    ButtonText = { "KrogerDashConnector.Feed", "Connect to Graph" },
-    SourceImage = KrogerDashConnector.Icons,
-    SourceTypeImage = KrogerDashConnector.Icons
+    ButtonText = { "DashConnector.Feed", "Connect to Dash Feed" },
+    SourceImage = DashConnector.Icons,
+    SourceTypeImage = DashConnector.Icons
 ];
 
-KrogerDashConnector.Icons = [
+DashConnector.Icons = [
     Icon16 = { Extension.Contents("MyGraph16.png"), Extension.Contents("MyGraph20.png"), Extension.Contents("MyGraph24.png"), Extension.Contents("MyGraph32.png") },
     Icon32 = { Extension.Contents("MyGraph32.png"), Extension.Contents("MyGraph40.png"), Extension.Contents("MyGraph48.png"), Extension.Contents("MyGraph64.png") }
 ];

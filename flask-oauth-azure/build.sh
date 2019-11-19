@@ -1,4 +1,3 @@
 #!/bin/sh
 
-docker build \
-    -t kroger/flask-oauth-azure .
+docker build -t flask-oauth-azure .

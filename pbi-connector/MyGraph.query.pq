@@ -1,2 +1,2 @@
 ﻿
-KrogerDashConnector.Feed()
+DashConnector.Feed()

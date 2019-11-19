@@ -1,6 +1,10 @@
 ## Sample: AAD-protected Flask API + Power BI Desktop custom connector
 
-Setup:
+The Flask app is configured for OAuth with [Flask-Dance](https://flask-dance.readthedocs.io/en/latest/providers.html#module-flask_dance.contrib.azure).
+
+The Power BI custom connector is configured to use [OAuth2 (v2) authorization_code flow](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow).
+
+### Setup:
 
 * Register an application in Azure AD and obtain the app_id, secret, and tenant_id. You'll also need to configure a redirect URL value of https://oauth.powerbi.com/views/oauthredirect.html
 
@@ -14,7 +18,7 @@ Setup:
 
 * The Flask app runs in Docker... you can run it directly on your laptop, but whyyy
 
-From your shell:
+### From your shell:
 
 * Run [build.sh](build.sh) to build the Docker image
 

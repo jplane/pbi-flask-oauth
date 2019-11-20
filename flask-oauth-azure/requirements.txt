@@ -1,2 +1,3 @@
 flask
-flask-dance
+python-jose-cryptodome
+six

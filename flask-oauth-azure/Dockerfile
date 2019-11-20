@@ -9,6 +9,6 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 # copy source
-COPY main.py .
+COPY *.py ./
 
 CMD ["python3", "main.py"]

@@ -1,28 +1,33 @@
 import os
 import io
 import json
-from flask import Flask, redirect, url_for, make_response, request
-from flask_dance.contrib.azure import make_azure_blueprint, azure
+import logging
+from flask import Flask, redirect, url_for, make_response, jsonify
+from flask.logging import default_handler
+from oauth import authorize, AuthError
+
 
 app = Flask(__name__)
+app.secret_key = os.getenv("FLASK_SECRET")
 
-app.secret_key = os.getenv("FLASK_SECRET")  # for user sessions
+formatter = logging.Formatter(
+    " %(asctime)s | %(pathname)s:%(lineno)d | %(funcName)s | %(levelname)s | %(message)s ")
+default_handler.setFormatter(formatter)
+default_handler.setLevel(logging.INFO)
 
-blueprint = make_azure_blueprint(
-    client_id=os.getenv("AAD_CLIENT_ID"),
-    client_secret=os.getenv("AAD_CLIENT_SECRET"),
-    tenant=os.getenv("AAD_TENANT_NAME")
-)
 
-app.register_blueprint(blueprint, url_prefix="/login")
+@app.errorhandler(AuthError)
+def handle_auth_error(ex):
+    app.logger.exception("authorization error")
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
+
 
 @app.route("/data")
 def data():
 
-    if not azure.authorized:
-        return redirect(url_for("azure.login"))
-
-    si = io.StringIO()
+    authorize(app.logger)
 
     json_data = [
         {
@@ -42,12 +47,10 @@ def data():
         }
     ]
 
+    si = io.StringIO()
     json.dump(json_data, si)
-
     resp = make_response(si.getvalue())
-
     resp.headers['Content-Type'] = 'application/json'
-
     return resp
 
 

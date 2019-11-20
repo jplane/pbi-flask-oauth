@@ -31,8 +31,9 @@ scopes = {
 [DataSource.Kind="DashConnector", Publish="DashConnector.UI"]
 shared DashConnector.Feed = () =>
     let
+//        source = Extension.CurrentCredential()[access_token]
         results = Web.Contents("http://localhost:5000/data"),
-        source = Text.FromBinary(results)
+        source = Json.Document(results)
     in
         source;
 
@@ -188,4 +189,3 @@ GetScopeString = (scopes as list, optional scopePrefix as text) as text =>
         asText = Text.Combine(addPrefix, " ")
     in
         asText;
-

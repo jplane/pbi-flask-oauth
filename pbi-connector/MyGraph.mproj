@@ -72,7 +72,7 @@
     <Compile Include="resources.resx">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="client_id">
+    <Compile Include="appsettings.json">
       <SubType>Content</SubType>
     </Compile>
     <Content Include="MyGraph.query.pq">

@@ -15,6 +15,13 @@ formatter = logging.Formatter(
 default_handler.setFormatter(formatter)
 default_handler.setLevel(logging.INFO)
 
+auth_enabled = os.getenv("AUTHENABLED") in ["True", "1", "Yes", None]
+
+if auth_enabled:
+    do_auth = authorize
+else:
+    do_auth = lambda log: log.info("Authorization is disabled")    
+
 
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
@@ -27,7 +34,7 @@ def handle_auth_error(ex):
 @app.route("/data")
 def data():
 
-    authorize(app.logger)
+    do_auth(app.logger)
 
     json_data = [
         {

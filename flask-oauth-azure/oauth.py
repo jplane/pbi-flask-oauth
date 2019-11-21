@@ -11,6 +11,8 @@ AUDIENCES = os.getenv("AUDIENCES")
 TENANT_ID = os.getenv("AAD_TENANT_NAME")
 SCOPES = os.getenv("SCOPES")
 
+rsa_key = None
+
 
 class AuthError(Exception):
     def __init__(self, error, status_code):
@@ -139,36 +141,40 @@ def decode_token(token, audience, rsa_key, logger):
 
 def get_rsa_key(token, logger):
 
-    try:
-        unverified_header = jwt.get_unverified_header(token)
-
-    except Exception:
-        raise AuthError({
-                "code": "invalid_header",
-                "description": "Unable to parse authentication token."
-            }, 401)
-
-    jsonurl = urlopen(
-        f"https://login.microsoftonline.com/{TENANT_ID}/discovery/v2.0/keys")
-
-    jwks = json.loads(jsonurl.read())
-    
-    for key in jwks["keys"]:
-        if key["kid"] == unverified_header["kid"]:
-            rsa_key = {
-                "kty": key["kty"],
-                "kid": key["kid"],
-                "use": key["use"],
-                "n": key["n"],
-                "e": key["e"]
-            }
+    global rsa_key
 
     if rsa_key is None:
-        raise AuthError({
-                "code": "invalid_header",
-                "description": "Unable to find appropriate key"
-            }, 401)
+        
+        try:
+            unverified_header = jwt.get_unverified_header(token)
 
-    logger.info(rsa_key)
+        except Exception:
+            raise AuthError({
+                    "code": "invalid_header",
+                    "description": "Unable to parse authentication token."
+                }, 401)
+
+        jsonurl = urlopen(
+            f"https://login.microsoftonline.com/{TENANT_ID}/discovery/v2.0/keys")
+
+        jwks = json.loads(jsonurl.read())
+        
+        for key in jwks["keys"]:
+            if key["kid"] == unverified_header["kid"]:
+                rsa_key = {
+                    "kty": key["kty"],
+                    "kid": key["kid"],
+                    "use": key["use"],
+                    "n": key["n"],
+                    "e": key["e"]
+                }
+
+        if rsa_key is None:
+            raise AuthError({
+                    "code": "invalid_header",
+                    "description": "Unable to find appropriate key"
+                }, 401)
+
+        logger.info(rsa_key)
 
     return rsa_key
